@@ -1,0 +1,189 @@
+@charset "utf-8";
+* {
+    margin: 0;
+    padding: 0;
+    font-family: "sans-serif";
+}
+
+body {
+    height: 100vh;
+    background-color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.wrapper {
+    width: 100%;
+    max-width: 900px;
+    height: 95%;
+    max-height: 600px;
+    color: #333;
+    background-color: #eee;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 10px;
+    position: relative;
+}
+
+#wait_message {
+    display: none;
+    position: absolute;
+    top: 1%;
+    left: 1%;
+}
+
+#enemy_hands {
+    width: 80%;
+    min-width: 600px;
+    max-width: 800px;
+    height: 130px;
+    background-color: #87cefa;
+    position: absolute;
+    top: 10%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.enemy_cards {
+    width: 60px;
+    height: 90px;
+    font-size: 40px;
+    background-color: #76bde9;
+    border: solid 2px #222;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+}
+
+#your_hands {
+    width: 80%;
+    min-width: 600px;
+    max-width: 800px;
+    height: 130px;
+    background-color: #ffc0cb;
+    position: absolute;
+    bottom: 10%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    z-index: 1;
+}
+
+.your_cards {
+    width: 60px;
+    height: 90px;
+    font-size: 40px;
+    background-color: #eeafba;
+    border: solid 2px #222;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#message_box {
+    width: 80%;
+    min-width: 600px;
+    max-width: 800px;
+    height: 130px;
+    background-color: white;
+    position: absolute;
+    bottom: 10%;
+    display: none;
+    justify-content: space-evenly;
+    align-items: center;
+    z-index: 10;
+}
+
+#message_text {
+    width: 75%;
+    height: 90%;
+    text-align: left;
+}
+
+#message_close, #message_leave {
+    display: none;
+    width: 10%;
+    height: 50px;
+    line-height: 50px;
+}
+
+#firld_box {
+    width: 80%;
+    min-width: 600px;
+    max-width: 800px;
+    height: 150px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+#your_drop {
+    width: 120px;
+    height: 150px;
+    background-color: #ffc0cb;
+}
+
+#info_box {
+    width: 300px;
+    height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+#enemy_info, #asayoru_info, #your_info {
+    width: 300px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#enemy_drop {
+    width: 120px;
+    height: 150px;
+    background-color: #87cefa;
+}
+
+#text_window {
+    padding: 3px;
+    position: fixed;
+    top: 2%;
+    right: 2%;
+    width: 200px;
+    height: 300px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    border-radius: 10px;
+    background: rgba(192, 192, 192, 0.9);
+}
+
+.used {
+    background-color: #666!important;
+    cursor: not-allowed
+}
+
+.btns {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.btns:hover {
+    background-color: #999;
+}
