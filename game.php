@@ -28,9 +28,10 @@ $json_visible_id = json_encode($visible_id, JSON_HEX_TAG | JSON_HEX_AMP | JSON_H
     <div class="wrapper">
         <!-- <button id="check">動作検証ボタン</button> -->
         <p id="wait_message">対戦相手を待っています。</p>
+        <div id="wait_leave" class="leave_btns btns">退出する</div>
         <div id="enemy_hands"></div>
         <div id="firld_box">
-            <div id="your_drop"></div>
+            <div id="your_drop">ここに<br>ドロップ</div>
             <div id="info_box">
                 <div id="enemy_info"></div>
                 <div id="asayoru_info"></div>
@@ -42,11 +43,11 @@ $json_visible_id = json_encode($visible_id, JSON_HEX_TAG | JSON_HEX_AMP | JSON_H
         <div id="message_box">
             <div id="message_text"></div>
             <div id="message_close" class="btns">とじる</div>
-            <div id="message_leave" class="btns">退出する</div>
+            <div id="message_leave" class="leave_btns btns">退出する</div>
         </div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="http://code.jquery.com/ui/1.10.0/jquery-ui.js"></script>
+    <script src="https://code.jquery.com/ui/1.10.0/jquery-ui.js"></script>
     <!-- The core Firebase JS SDK is always required and must be listed first -->
     <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase.js"></script>
 

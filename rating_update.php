@@ -57,6 +57,7 @@ if ($rating_variable >= 30) {
 if ($win_or_lose == "win") {
     $new_rating = $your_result["user_rating_point"] + $rating_variable;
 } else if ($win_or_lose == "draw") {
+    $new_rating = $your_result["user_rating_point"];
 } else if ($win_or_lose == "lose") {
     $new_rating = $your_result["user_rating_point"] - $rating_variable;
 };

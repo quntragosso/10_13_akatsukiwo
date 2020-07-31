@@ -31,7 +31,7 @@ if ($username == "ゲスト") {
     $header_btns .= "<li id='login_btn' class='btns'>ログイン</li>";
 } else {
     $header_btns .= "<li>いまのレート：{$result[0]["user_rating_point"]}</li>";
-    $header_btns .= "<li id='logout_btn' class='bts'><a href='logout_act.php'>ログアウト</a></li>";
+    $header_btns .= "<li id='logout_btn' class='btns'>ログアウト</li>";
 }
 
 $main_box = "";
@@ -41,7 +41,7 @@ if ($username == "ゲスト") {
     $main_box .= "<div id='pool_btn' class='btns'>ふだのやま</div>";
     $main_box .= "<div id='ranking_btn' class='btns'>じゅんい</div>";
 } else {
-    $main_box .= "<div id='battle_btn' class='btns'><a href='game.php'>あそぶ</a></div>";
+    $main_box .= "<div id='battle_btn' class='btns'>あそぶ</div>";
     $main_box .= "<div id='rule_btn' class='btns'>あそびかた</div>";
     $main_box .= "<div id='pool_btn' class='btns'>ふだのやま</div>";
     $main_box .= "<div id='ranking_btn' class='btns'>じゅんい</div>";

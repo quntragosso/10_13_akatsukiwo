@@ -3,11 +3,10 @@
 // 共通処理
 session_start();
 include("functions.php");
-check_session_id();
 
 if (
-    !$_POST["username"] || $_POST["username"] == "" ||
-    !$_POST["password"] || $_POST["password"] == ""
+    !isset($_POST["username"]) || $_POST["username"] == "" ||
+    !isset($_POST["password"]) || $_POST["password"] == ""
 ) {
     echo "inputerror";
     exit();

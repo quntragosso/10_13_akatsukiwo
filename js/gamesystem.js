@@ -12,14 +12,14 @@ $(function () {
     let yourName = username;
     let yourHand = [];
     let yourPoint = 0;
-    let yourStatus;
+    let yourBeforePlay = "";
     let yourPlay;
 
     // 対戦相手情報に対して必要な変数
     let enemyName;
-    let enemyHand = [];
+    // let enemyHand = [];
     let enemyPoint = 0;
-    let enemyStatus;
+    let enemyBeforePlay = "";
     let enemyPlay;
 
     // 全体共通変数の感じ
@@ -27,16 +27,18 @@ $(function () {
     let matching = false;
     let serverID = visibleID;
     let turnCounter = 6; // 6から1へ, の6ターン。
-    let winOrLose;
+    let winOrLose = "";
 
     // 朝夜に応じて背景色変更。
     function asayoruSwitch() {
         if (asaYoru == "朝") {
             $("body").css("background-color", "#f19072");
             $("#info_box").css("background-color", "#f19072");
+            $("#asayoru_info").text("今は" + asaYoru + "なり。");
         } else if (asaYoru == "夜") {
             $("body").css("background-color", "#8456a5");
             $("#info_box").css("background-color", "#8456a5");
+            $("#asayoru_info").text("今は" + asaYoru + "なり。");
         }
     }
 
@@ -80,6 +82,7 @@ $(function () {
     // host時の最初動作, hostとしてドキュメントを設置。
     async function hostAction() {
         $("#wait_message").css("display", "block");
+        $("#wait_leave").css("display", "block");
         asaYoruRNG();
         await cardDeal();
         let setting;
@@ -107,7 +110,6 @@ $(function () {
         gameServer.doc(serverID).update({
             guestname: username,
             guesthand: yourHand,
-            guestpoint: 0,
             guestplay: "unset",
             cards: numberArray
         });
@@ -115,13 +117,17 @@ $(function () {
 
     // 勝敗判定
     function judgeManager() {
-        if (yourPoint > enemyPoint) {
+        console.log(yourPoint, enemyPoint);
+        const judgementNum = yourPoint - enemyPoint;
+        console.log(winOrLose, judgementNum);
+        if (judgementNum > 0) {
             winOrLose = "win";
-        } else if (yourPoint == enemyPoint) {
+        } else if (judgementNum == 0) {
             winOrLose = "draw";
-        } else if (yourPoint < enemyPoint) {
+        } else if (judgementNum < 0) {
             winOrLose = "lose"
         };
+        console.log(winOrLose);
     };
 
     // 勝敗判定後の各種処理
@@ -154,7 +160,6 @@ $(function () {
     function moniterFirebase() {
         gameServer.doc(serverID).onSnapshot(doc => {
             asaYoru = doc.data().asayoru;
-            console.log(asaYoru);
             // 最初共通処理
             if (matching == false && doc.data().guestname != "unset") {
                 if (you == "host") {
@@ -162,6 +167,7 @@ $(function () {
                     enemyHand = doc.data().guesthand;
                     matching = true;
                     $("#wait_message").css("display", "none");
+                    $("#wait_leave").css("display", "none");
                 } else if (you == "guest") {
                     enemyName = doc.data().hostname;
                     enemyHand = doc.data().hosthand;
@@ -169,6 +175,7 @@ $(function () {
                     asayoruSwitch();
                     matching = true;
                     $("#wait_message").css("display", "none");
+                    $("#wait_leave").css("display", "none");
                 }
                 $("#your_info").text(yourName + ":" + yourPoint);
                 $("#asayoru_info").text("今は" + asaYoru + "なり。");
@@ -180,42 +187,43 @@ $(function () {
                     $("#enemy_hands").append(`<div id="enemy${i}" class="enemy_cards"></div>`);
                 }
 
-                // usedじゃないカードに対してドラッグイベントを付与。
-                if ($(".your_cards").hasClass("used")) {
-
-                } else {
-                    $(".your_cards").draggable({
-                        revert: true,
-                        revertDuration: 200
-                    });
-                }
-
-                // ドラッグイベント
-                $(".your_cards").on("mousedown", function () {
-                    const selected = $(this).attr("id");
-                    const selectedInt = parseInt(selected);
-                    $("#your_drop").droppable({
-                        accept: ".your_cards",
-                        drop: function () {
-                            $(`#${selected}`).addClass("used");
-                            if (you == "host") {
-                                $("#message_box").css("display", "flex");
-                                $("#message_text").text("通信待機中");
-                                gameServer.doc(serverID).update({
-                                    hostplay: selectedInt
-                                });
-                            } else if (you == "guest") {
-                                $("#message_box").css("display", "flex");
-                                $("#message_text").text("通信待機中");
-                                gameServer.doc(serverID).update({
-                                    guestplay: selectedInt
-                                });
-                            }
-
-                        }
-                    });
-                });
             };
+
+            // usedじゃないカードに対してドラッグイベントを付与。
+            if ($(".your_cards").hasClass("used")) {
+
+            } else {
+                $(".your_cards").draggable({
+                    revert: true,
+                    revertDuration: 200
+                });
+            }
+
+            // ドラッグイベント
+            $(".your_cards").on("mousedown", function () {
+                const selected = $(this).attr("id");
+                const selectedInt = parseInt(selected);
+                $("#your_drop").droppable({
+                    accept: ".your_cards",
+                    drop: function () {
+                        $(`#${selected}`).addClass("used");
+                        if (you == "host") {
+                            $("#message_box").css("display", "flex");
+                            $("#message_text").text("通信待機中");
+                            gameServer.doc(serverID).update({
+                                hostplay: selectedInt
+                            });
+                        } else if (you == "guest") {
+                            $("#message_box").css("display", "flex");
+                            $("#message_text").text("通信待機中");
+                            gameServer.doc(serverID).update({
+                                guestplay: selectedInt
+                            });
+                        }
+                    }
+                });
+            });
+
 
             // 両者カードドロップ完了時
             // カードの配列番号を取得→class名としてajaxで送る→resultとして現れたpointをFirebase update。
@@ -227,7 +235,9 @@ $(function () {
                         data: {
                             "yourpoint": yourPoint,
                             "yourplay": cardArray[yourPlay][2],
+                            "yourbeforeplay": yourBeforePlay,
                             "enemyplay": cardArray[enemyPlay][2],
+                            "enemybeforeplay": enemyBeforePlay,
                             "asayoru": asaYoru
                         }
                     }).done(function (result) {
@@ -255,41 +265,42 @@ $(function () {
                     yourPlay = doc.data().guestplay;
                     enemyPlay = doc.data().hostplay;
                     a();
-                }
-
+                };
             };
 
-            // point表示更新, Firebase更新処理。どっちにifを入れるか逆でもいい(多分いままで逆)。
             // pointを取得→pointの表示を更新→firebaseのpointを"unset"する。
             // turnCounterが0のとき(実際には6番目のとき), 勝敗判定を行う等処理に移る。
-            if (you == "host") {
-                if (doc.data().hostpoint != "unset" && doc.data().guestpoint != "unset") {
+            if (doc.data().hostpoint != "unset" && doc.data().guestpoint != "unset") {
+                if (you == "host") {
+                    const yourBeforePoint = yourPoint;
+                    const enemyBeforePoint = enemyPoint;
                     yourPoint = doc.data().hostpoint;
                     enemyPoint = doc.data().guestpoint;
-                    // host側だけ挙動が重くて処理が間に合わないのか, 微妙にdelayをかけないといけない。
                     setTimeout(function () {
                         $("#your_info").text(yourName + ":" + yourPoint);
                         $("#enemy_info").text(enemyName + ":" + enemyPoint);
+                        $("#message_text").html(`<p>${enemyName}は${cardArray[enemyPlay][1]}を使用。${enemyPoint - enemyBeforePoint}を獲得。</p><br<p>${yourName}は${cardArray[yourPlay][1]}を使用。${yourPoint - yourBeforePoint}を獲得。`);
                         asaYoruRNG();
                         gameServer.doc(serverID).update({
                             hostpoint: "unset",
                             asayoru: asaYoru
                         });
                         $("#message_close").css("display", "flex");
-                    }, 300);
-                };
-            } else if (you == "guest") {
-                if (doc.data().hostpoint != "unset" && doc.data().guestpoint != "unset") {
+                    }, 1000);
+                } else if (you == "guest") {
+                    const yourBeforePoint = yourPoint;
+                    const enemyBeforePoint = enemyPoint;
                     yourPoint = doc.data().guestpoint;
                     enemyPoint = doc.data().hostpoint;
                     setTimeout(function () {
                         $("#your_info").text(yourName + ":" + yourPoint);
                         $("#enemy_info").text(enemyName + ":" + enemyPoint);
+                        $("#message_text").html(`<p>${enemyName}は${cardArray[enemyPlay][1]}を使用。${enemyPoint - enemyBeforePoint}を獲得。</p><br<p>${yourName}は${cardArray[yourPlay][1]}を使用。${yourPoint - yourBeforePoint}を獲得。`);
                         gameServer.doc(serverID).update({
                             guestpoint: "unset"
                         });
                         $("#message_close").css("display", "flex");
-                    }, 300);
+                    }, 1000);
                 };
             };
         });
@@ -297,6 +308,9 @@ $(function () {
 
     // ブラウザ起動時処理
     $(document).ready(async function () {
+        setTimeout(function () {
+            $(".wrapper").fadeIn(1500);
+        }, 1000);
         await hostOrGuest();
         function a() {
             if (you == "host") {
@@ -359,13 +373,15 @@ $(function () {
     // とじるボタン
     $("#message_close").on("click", function () {
         turnCounter--;
+        yourBeforePlay = cardArray[yourPlay][2];
+        enemyBeforePlay = cardArray[enemyPlay][2];
         if (turnCounter != 0) {
+            asayoruSwitch();
             $("#message_text").text("");
             $("#message_close").css("display", "none");
             $("#message_box").css("display", "none");
             $(`#enemy${turnCounter}`).text(cardArray[enemyPlay][1]);
             $(`#enemy${turnCounter}`).addClass("used");
-            asayoruSwitch();
         } else if (turnCounter == 0) {
             $("#message_close").css("display", "none");
             judgeManager();
@@ -374,13 +390,14 @@ $(function () {
     });
 
     // 退出するボタン
-    $("#message_leave").on("click", function () {
+    $(".leave_btns").on("click", function () {
         if (you == "host") {
             gameServer.doc(serverID).delete();
-            window.location.href = "index.php";
-        } else if (you == "guest") {
-            window.location.href = "index.php";
         };
+        $(".wrapper").fadeOut(500);
+        setTimeout(function () {
+            window.location.href = "index.php";
+        }, 1000);
     });
 
 });

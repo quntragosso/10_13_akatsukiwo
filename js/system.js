@@ -1,4 +1,10 @@
 $(function () {
+    $(document).ready(function () {
+        setTimeout(function () {
+            $(".wrapper").fadeIn(1000);
+        }, 1000);
+    });
+
     // アカウントを作るボタン
     $("#register_btn").on("click", function () {
         $(".wrapper").fadeOut(500);
@@ -48,6 +54,21 @@ $(function () {
         $("#pool").empty();
     });
 
+    // ログアウトボタン。
+    $("#logout_btn").on("click", function () {
+        $.ajax({
+            url: "logout_act.php",
+        }).done(function () {
+            $(".wrapper").fadeOut(500);
+            setTimeout(function () {
+                window.location.href = "index.php";
+            }, 1000);
+        }).fail(function () {
+            // 通信失敗時の処理を記述
+            console.log("error")
+        });
+    });
+
     // 登録処理。微妙にアニメが入ってからリロード。ダサい。
     $("#registers_submit").on("click", function () {
         $.ajax({
@@ -82,7 +103,7 @@ $(function () {
             }
         }).done(function (result) {
             if (result == "inputerror") {
-                alert("入力情報に誤りがあるか、このなまえは使用できません。");
+                alert("入力情報に不備があります。");
                 $("#input_username").val("");
                 $("#input_password").val("");
             } else {
@@ -95,6 +116,13 @@ $(function () {
             // 通信失敗時の処理を記述
             console.log("error")
         });
+    });
+
+    $("#battle_btn").on("click", function () {
+        $(".wrapper").fadeOut(500);
+        setTimeout(function () {
+            window.location.href = "game.php";
+        }, 1000);
     });
 
     // あそびかたボタン

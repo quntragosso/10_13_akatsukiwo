@@ -3,10 +3,16 @@
 function connect_to_db()
 {
   // DB接続の設定
-  // DB名は`gsacf_x00_00`にする
+  // localhost用
   $dbn = 'mysql:dbname=gsacfd06_13;charset=utf8;port=3306;host=localhost';
   $user = 'root';
   $pwd = '';
+
+  //デプロイ用
+  // $dbn = 'mysql:dbname=ここを変更;charset=utf8;port=3306;host=ここを変更';
+  // $user = 'ここを変更';
+  // $pwd = 'ここを変更';
+
 
   try {
     // ここでDB接続処理を実行する
